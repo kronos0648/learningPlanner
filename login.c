@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "plan.c"
 
 typedef struct account {
 	char name[100];
@@ -8,6 +9,8 @@ typedef struct account {
 	char password[100];
 	struct account* link;
 }Account;
+
+char *loggedId;
 
 void irc(Account* p) {
 	sprintf(p->name, "null");
@@ -65,37 +68,48 @@ void add_record(FILE* fp, Account* ap) {
 	}
 	printf("---------------------------------\n");
 	getchar();
-	printf("이름 입력:");
+	printf("name:");
 	fgets(instAccount->name, sizeof(instAccount->name), stdin);
-	printf("ID 입력:");
+	printf("ID:");
 	fgets(instAccount->id, sizeof(instAccount->id), stdin);
-	printf("PASSWORD 입력:");
+	printf("PASSWORD:");
 	fgets(instAccount->password, sizeof(instAccount->password), stdin);
 
 	temp->link = instAccount;
 
 	fwrite(instAccount, sizeof(Account), 1, fp);
-
 	fclose(fp);
+	char filename[100];
+	strcpy(filename,"subject_");
+	strcat(filename,instAccount->id);
+	FILE *fw;
+	fw=fopen(filename,"w");
+	close(fw);
+	strcpy(filename,"schedule_");
+	strcat(filename,instAccount->id);
+	fw=fopen(filename,"w");
+	close(fw);
 }
 
-void search_record(Account* ap) { //검색
+
+
+void search_record(Account *ap)
+{
 	char id[100];
 	char password[100];
-	printf("ID 입력: ");
+	printf("ID: ");
 	getchar();
 	fgets(id, sizeof(id), stdin);
-	printf("PASSWORD 입력: ");
+	printf("PASSWORD: ");
 	fgets(password, sizeof(password), stdin);
 	//name[strlen(name) - 1] = '\0';
 	Account* temp = ap->link;
 	while (temp != NULL) {
 		if (strcmp(temp->id, id) == 0 && strcmp(temp->password, password) == 0) {
 			printf("---------------------------------\n");
-			printf("이름 : %s", temp->name);
-			printf("ID : %s", temp->id);
-			printf("PASSWORD : %s", temp->password);
+			printf("login success\n");
 			printf("---------------------------------\n");
+			management();
 			break;
 		}
 		temp = temp->link;
@@ -103,11 +117,11 @@ void search_record(Account* ap) { //검색
 }
 
 
-void allAccount(Account* ap) { //전부 출력
+void allAccount(Account* ap) { //占쏙옙占쏙옙 占쏙옙占�
 	Account* temp = ap->link;
 	while (temp != NULL) {
 		printf("---------------------------------\n");
-		printf("이름 : %s", temp->name);
+		printf("name : %s", temp->name);
 		printf("ID : %s", temp->id);
 		printf("PASSWORD : %s", temp->password);
 		temp = temp->link;
@@ -115,8 +129,42 @@ void allAccount(Account* ap) { //전부 출력
 	printf("---------------------------------\n");
 }
 
+void management()
+{
+	int num=0;
+	while(1)
+	{
+		printf("---------------------------------\n");
+		printf("1.register subject 2.register plan 3.view subject 4.view plan 5.logout 6.exit\n");
+		printf("---------------------------------\n");
+		scanf("%d", &num);
+		switch(num)
+		{
+			case 1:
 
-void main() {
+			break;
+
+			case 2:
+			break;
+
+			case 3:
+			break;
+
+			case 4:
+			break;
+
+			case 5:
+			break;
+
+			default:
+			break;
+		}
+	}
+
+}
+
+void authentication()
+{
 	int num = 0;
 
 	Account* ap = (Account*)malloc(sizeof(Account));
@@ -132,11 +180,11 @@ void main() {
 
 	while (1) {
 		printf("------------------------------\n");
-		printf("학사일정 관리 플래너\n");
-		printf("1. 회원가입\n");
-		printf("2. 로그인\n");
-		printf("3. 계정확인(임시,개발후 삭제)\n");
-		printf("4. 종료\n");
+		printf("learning management planner\n");
+		printf("1. Sign Up\n");
+		printf("2. Login\n");
+		printf("3. Account Check\n");
+		printf("4. Exit\n");
 		printf("------------------------------\n");
 
 		scanf("%d", &num);
@@ -151,7 +199,7 @@ void main() {
 			search_record(ap);
 			break;
 		case 3:
-			allAccount(ap);
+			//allAccount(ap);
 			break;
 		default:
 			break;
@@ -169,4 +217,9 @@ void main() {
 			temp = temp2;
 		}
 	}
+
+}
+
+void main() {
+	authentication();
 }

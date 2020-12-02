@@ -20,9 +20,8 @@ void printSchedule(Schedule);
 
 int getFileAsRead(char* id)
 {
-	char filename[100]="schedule/schedule_@";
+	char filename[100]="schedule_@";
 	strcat(filename,id);
-	strcat(filename,".txt");
 	
 	int f_schedule=open(filename,O_RDONLY);
 	if(f_schedule==-1)
@@ -43,7 +42,7 @@ Schedule getSchedule(int fd)
 	struct flock lock;
 	
 	**schedules=(char **)malloc(sizeof((char*)row));
-	while(!eof(file))
+	while(!feof(file))
 	{
 		lock.l_type=F_RDLCK;
 		lock.l_whence=0;
@@ -117,7 +116,6 @@ void registerSchedule(char *id,char *date,char *subject,char *content)
 	
 	char filename[100]="schedule/schedule_@";
 	strcat(filename,id);
-	strcat(filename,".txt");
 	int fd_schedule=open(filename,O_APPEND);
 	if(fcntl(fd_schedule,F_SETLKW,&lock)==-1)
 	{
