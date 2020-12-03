@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "subject.c"
 #include "plan.c"
 
 typedef struct account {
@@ -79,16 +80,18 @@ void add_record(FILE* fp, Account* ap) {
 
 	fwrite(instAccount, sizeof(Account), 1, fp);
 	fclose(fp);
-	char filename[100];
-	strcpy(filename,"subject_");
+	/*char filename[100];
+	strcpy(filename,"subject/subject_");
 	strcat(filename,instAccount->id);
 	FILE *fw;
 	fw=fopen(filename,"w");
+	printf("filename:%s\n",filename);
 	close(fw);
-	strcpy(filename,"schedule_");
+	strcpy(filename,"schedule/schedule_");
 	strcat(filename,instAccount->id);
 	fw=fopen(filename,"w");
-	close(fw);
+	printf("filename:%s\n",filename);
+	close(fw);*/
 }
 
 
@@ -106,6 +109,9 @@ void search_record(Account *ap)
 	Account* temp = ap->link;
 	while (temp != NULL) {
 		if (strcmp(temp->id, id) == 0 && strcmp(temp->password, password) == 0) {
+			loggedId=(char*)malloc(sizeof(id));
+			char *ptr=strtok(id,"\n");
+			strcpy(loggedId,ptr);
 			printf("---------------------------------\n");
 			printf("login success\n");
 			printf("---------------------------------\n");
@@ -129,6 +135,18 @@ void allAccount(Account* ap) { //���� ���
 	printf("---------------------------------\n");
 }
 
+void regsubject()
+{
+	char subject[100];
+	printf("write the subject to register\n");
+	printf("---------------------------------\n");
+	scanf("%s",subject);
+	printf("LoggedId:%s Subject:%s\n",loggedId,subject);
+	registerSubject(loggedId,subject);
+	printf("register success\n");
+
+}
+
 void management()
 {
 	int num=0;
@@ -141,19 +159,23 @@ void management()
 		switch(num)
 		{
 			case 1:
-
+			regsubject();
 			break;
 
 			case 2:
+			registerSchedule(loggedId);
 			break;
 
 			case 3:
 			break;
 
 			case 4:
+			getSchedule(loggedId);
 			break;
 
 			case 5:
+			free(loggedId);
+			authentication();
 			break;
 
 			default:
