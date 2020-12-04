@@ -108,6 +108,7 @@ void search_record(Account *ap)
 	//name[strlen(name) - 1] = '\0';
 	Account* temp = ap->link;
 	while (temp != NULL) {
+		//printf("ID:%s\n",temp->id);
 		if (strcmp(temp->id, id) == 0 && strcmp(temp->password, password) == 0) {
 			loggedId=(char*)malloc(sizeof(id));
 			char *ptr=strtok(id,"\n");
@@ -150,35 +151,35 @@ void regsubject()
 void management()
 {
 	int num=0;
-	while(1)
+	short run=1;
+	while(run)
 	{
 		printf("---------------------------------\n");
-		printf("1.register subject 2.register plan 3.view subject 4.view plan 5.logout 6.exit\n");
+		printf("1.register Schedule 2.view Schedule 3.logout 4.exit\n");
 		printf("---------------------------------\n");
 		scanf("%d", &num);
+		getchar();
 		switch(num)
 		{
 			case 1:
-			regsubject();
-			break;
-
-			case 2:
 			registerSchedule(loggedId);
 			break;
 
-			case 3:
-			break;
-
-			case 4:
+			case 2:
 			getSchedule(loggedId);
 			break;
 
-			case 5:
+			case 3:
 			free(loggedId);
 			authentication();
 			break;
 
+			case 4:
+			run=0;
+			break;
+
 			default:
+			printf("Error : Undefined Option\n");
 			break;
 		}
 	}
@@ -188,6 +189,7 @@ void management()
 void authentication()
 {
 	int num = 0;
+	short run=1;
 
 	Account* ap = (Account*)malloc(sizeof(Account));
 	irc(ap);
@@ -200,16 +202,17 @@ void authentication()
 		fclose(fp);
 	}
 
-	while (1) {
+	while (run) {
 		printf("------------------------------\n");
 		printf("learning management planner\n");
 		printf("1. Sign Up\n");
 		printf("2. Login\n");
-		printf("3. Account Check\n");
-		printf("4. Exit\n");
+		//printf("3. Account Check\n");
+		printf("3. Exit\n");
 		printf("------------------------------\n");
 
 		scanf("%d", &num);
+		//getchar();
 		if (num == 4)
 			break;
 
@@ -222,8 +225,10 @@ void authentication()
 			break;
 		case 3:
 			//allAccount(ap);
+			run=0;
 			break;
 		default:
+			printf("Error : undefined Option\n");
 			break;
 		}
 

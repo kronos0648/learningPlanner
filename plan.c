@@ -38,24 +38,20 @@ Schedule getSchedule(char *id)
 	}
 	
 	char schedule[sz_file];
-	printf("file size : %d \n",sz_file);
 	int result;
 	if((result=read(fd,schedule,sz_file))==-1)
 	{
 		perror("read error");
 	}
-	printf("Read success : %d \n",sz_file);
 	int tokenCount=0;
 	char *ptr=strtok(schedule,"/");
 	char info[200][200];
 	while(ptr!=NULL)
 	{
 		strcpy(info[tokenCount],ptr);
-		printf("%s\n",info[tokenCount]);
 		ptr=strtok(NULL,"/");
 		tokenCount++;
 	}
-	printf("token size : %d \n",tokenCount);
 	for(int i=0;i<tokenCount;i+=4)
 	{
 		if(strcmp(info[i],id)==0)
@@ -74,27 +70,24 @@ Schedule getSchedule(char *id)
 
 void registerSchedule(char *id)
 {
-	long position;
-	struct flock lock;
-	lock.l_type=F_WRLCK;
-	lock.l_whence=0;
-	lock.l_start=position;
-	lock.l_len=200;
-	
-
 	int fd_schedule;
 	if((fd_schedule=open("schedule",O_CREAT|O_WRONLY|O_APPEND,0777))==-1)
 	{
 		perror("File open error");
 	}
+	off_t sz_file=lseek(fd_schedule,0,SEEK_END);
+	lseek(fd_schedule,0,SEEK_SET);
+	off_t position=sz_file;
+	struct flock lock;
+	lock.l_type=F_WRLCK;
+	lock.l_whence=SEEK_SET;
+	lock.l_start=0;
+	lock.l_len=position;
 	if(fcntl(fd_schedule,F_SETLKW,&lock)==-1)
 	{
-		perror("write lock error");
+		perror("File is lock");
 		//return;
 	}
-	printf("whereis\n");
-	lseek(fd_schedule,position,0);
-	printf("whereis\n");
 
 	char subject[100];
 	char date[100];
@@ -102,16 +95,18 @@ void registerSchedule(char *id)
 	printf("write the subject to register schedule as\n");
 	printf("---------------------------------\n");
 	scanf("%s",subject);
+	getchar();
 	printf("write the date for plan(Format : yyyy-mm-dd)\n");
 	printf("---------------------------------\n");
 	scanf("%s",date);
+	getchar();
 	printf("write the schedule as\n");
 	printf("---------------------------------\n");
 	scanf("%s",plan);
-	
+	getchar();
 	int size=sizeof(id)+sizeof(date)+sizeof(subject)+sizeof(plan)+10;
 	char *insert=(char*)malloc(size);
-	printf("ID:%s",id);
+
 	strcpy(insert,id);
 	strcat(insert,"/");
 	strcat(insert,date);
